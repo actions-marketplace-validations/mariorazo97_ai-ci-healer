@@ -3,6 +3,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/mariorazo97/ai-ci-healer?style=for-the-badge&color=purple)](https://github.com/mariorazo97/ai-ci-healer/releases)
 [![License](https://img.shields.io/github/license/mariorazo97/ai-ci-healer?style=for-the-badge)](./LICENSE)
 [![Support](https://img.shields.io/badge/Support-Buy%20me%20a%20coffee-yellow?style=for-the-badge&logo=buymeacoffee)](https://buymeacoffee.com/quizmybrai7)
+[![QuizMyBrainz](https://img.shields.io/badge/QuizMyBrainz-Powered%20by%20AI-9C27B0?style=for-the-badge&logo=lightning&logoColor=white)](https://quizmybrainz.com)
 
 **Stop Googling build errors. Let AI fix them for you.**
 
