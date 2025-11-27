@@ -1,0 +1,50 @@
+{
+    "name": "ai-ci-healer",
+    "version": "1.0.0",
+    "description": "AI-powered GitHub Action that analyzes build failures and suggests fixes",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc && ncc build src/index.ts -o dist",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "lint": "eslint src/**/*.ts",
+        "format": "prettier --write 'src/**/*.ts'",
+        "package": "npm run build && npm test"
+    },
+    "keywords": [
+        "github-action",
+        "ci-cd",
+        "devops",
+        "ai",
+        "llm",
+        "automation",
+        "build-failures",
+        "debugging"
+    ],
+    "author": "Mr. P @ QuizMyBrainz",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yourusername/ai-ci-healer.git"
+    },
+    "dependencies": {
+        "@actions/core": "^1.11.1",
+        "@actions/github": "^6.0.1"
+    },
+    "devDependencies": {
+        "@types/jest": "^30.0.0",
+        "@types/node": "^24.10.1",
+        "@typescript-eslint/eslint-plugin": "^8.48.0",
+        "@typescript-eslint/parser": "^8.48.0",
+        "@vercel/ncc": "^0.38.4",
+        "dotenv": "^17.2.3",
+        "eslint": "^9.39.1",
+        "jest": "^30.2.0",
+        "prettier": "^3.6.2",
+        "ts-jest": "^29.4.5",
+        "typescript": "^5.9.3"
+    },
+    "engines": {
+        "node": ">=20.0.0"
+    }
+}

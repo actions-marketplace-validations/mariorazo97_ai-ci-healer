@@ -1,0 +1,41 @@
+name: Demo Failure for Screenshot
+
+# 👇 THIS IS WHAT WAS MISSING!
+on: 
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: read
+
+jobs:
+  trigger-failure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 1. We create a file that is guaranteed to crash
+      - name: Create Buggy Code
+        run: |
+          echo "console.log('Hello world'" > buggy.js 
+          # ^ Missing closing parenthesis!
+
+      # 2. We run it, and it will fail
+      - name: Run Buggy Code
+        run: node buggy.js
+
+      # 3. The Healer steps in to fix it
+      - name: AI CI Healer
+        if: failure() # Only runs if the step above failed
+        uses: ./ 
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          llm-provider: "groq"
+          groq-api-key: ${{ secrets.GROQ_API_KEY }}
+          enable-comments: "true"
+          model: "llama-3.3-70b-versatile"

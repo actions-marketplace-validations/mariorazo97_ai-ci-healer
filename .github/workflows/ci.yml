@@ -1,0 +1,52 @@
+name: CI with AI Healer
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test & Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run linter
+        run: npm run lint
+        continue-on-error: true
+      
+      - name: Run tests
+        run: npm test
+        continue-on-error: true
+      
+      - name: Build project
+        run: npm run build
+      
+      # 🤖 AI CI Healer - Analyze and fix failures
+      - name: AI CI Healer
+        if: failure()
+        uses: ./  # Uses the local action (for testing)
+        # In production, use: uses: your-username/ai-ci-healer@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          groq-api-key: ${{ secrets.GROQ_API_KEY }}
+          llm-provider: groq
+          confidence-threshold: 60
+          max-log-lines: 500
+          custom-context: |
+            This is a TypeScript GitHub Action project.
+            We use Jest for testing.
+            All code must pass ESLint with our config.

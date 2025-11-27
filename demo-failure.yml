@@ -1,0 +1,36 @@
+name: Demo Build
+
+on: [push, workflow_dispatch]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  build-and-fail:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. Create a fake TypeScript file with a bug
+      - name: Create buggy code
+        run: |
+          echo "import { nonExistent } from 'missing-package';" > src/buggy.ts
+          echo "console.log(nonExistent());" >> src/buggy.ts
+
+      # 2. Try to run it (It will fail)
+      - name: Run Build
+        id: build
+        run: npx tsx src/buggy.ts
+
+      # 3. The Healer steps in
+      - name: AI CI Healer
+        if: failure()
+        uses: ./ # Uses your code from the root
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          llm-provider: "groq"
+          groq-api-key: ${{ secrets.GROQ_API_KEY }}
+          enable-comments: "true"
+          model: "llama-3.3-70b-versatile"

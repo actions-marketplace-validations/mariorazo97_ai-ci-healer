@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+# DO NOT IGNORE package-lock.json - it is crucial for stability!
+# package-lock.json 
+yarn.lock
+
+# Build outputs
+# ⚠️ WE MUST ALLOW dist/ FOR GITHUB ACTIONS TO WORK
+!dist/
+lib/
+*.js.map
+!jest.config.js
+
+# Ignore JS files in root, but allow the build artifact in dist
+*.js
+!dist/index.js
+
+# TypeScript
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary
+tmp/
+temp/
+*.tmp
