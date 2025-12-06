@@ -1,179 +1,95 @@
-# 🔧 AI CI Healer
+# 🚑 AI CI Healer
+
+[![GitHub Release](https://img.shields.io/github/v/release/mariorazo97/ai-ci-healer?style=for-the-badge&color=purple)](https://github.com/mariorazo97/ai-ci-healer/releases)
+[![License](https://img.shields.io/github/license/mariorazo97/ai-ci-healer?style=for-the-badge)](./LICENSE)
+[![Support](https://img.shields.io/badge/Support-Buy%20me%20a%20coffee-yellow?style=for-the-badge&logo=buymeacoffee)](https://buymeacoffee.com/quizmybrai7)
+[![QuizMyBrainz](https://img.shields.io/badge/QuizMyBrainz-Powered%20by%20AI-9C27B0?style=for-the-badge&logo=lightning&logoColor=white)](https://quizmybrainz.com)
 
 **Stop Googling build errors. Let AI fix them for you.**
 
-When your GitHub Actions fail, AI CI Healer:
-1. ✅ Reads the error log
-2. 🤖 Asks an AI (Groq/Gemini/Ollama) what went wrong
-3. 💬 Comments the EXACT fix on your PR
-4. ⚡ Takes ~10 seconds
+When your GitHub Actions fail, **AI CI Healer** analyzes the logs, finds the root cause (using Groq, Gemini, or Ollama), and posts the **exact fix** directly to your PR or commit.
 
-![AI CI Healer Demo](https://via.placeholder.com/800x400?text=Demo+GIF+Coming+Soon)
+![AI CI Healer Demo](https://github.com/mariorazo97/ai-ci-healer/blob/main/images/solution01.png?raw=true)
 
 ---
 
-## 🚀 Quick Start (30 seconds)
+## ✨ Features
 
-Add this to your workflow file **after** your failing step:
+- **🧠 Multi-Brain Support:** Choose between **Groq** (Fastest), **Gemini** (Smartest), or **Ollama** (Private/Local).
+- **🛡️ Smart Fallback:** Automatically tries alternative providers if one API fails.
+- **👁️ Chain of Thought:** Expands the "Reasoning" dropdown to show *why* the AI chose the fix.
+- **⚡ Blazing Fast:** Zero-config setup. Drops into any workflow in seconds.
+- **🔒 Enterprise Ready:** Works with private repositories and self-hosted runners.
+
+---
+
+## 🚀 Quick Start
+
+Add this step to your workflow file (e.g., `.github/workflows/ci.yml`) **after** your build/test steps.
+
+> **Note:** The `if: failure()` line is crucial. It ensures the Healer only runs when something breaks.
 
 ```yaml
-# .github/workflows/test.yml
-name: Tests
+- name: Run Tests
+  run: npm test
 
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Run tests
-        run: npm test
-      
-      # 👇 Add this step to auto-heal failures
-      - name: AI CI Healer
-        if: failure()  # Only runs when previous steps fail
-        uses: your-username/ai-ci-healer@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          groq-api-key: ${{ secrets.GROQ_API_KEY }}
+# 👇 Add this step to auto-heal failures
+- name: AI CI Healer
+  if: failure()
+  uses: mariorazo97/ai-ci-healer@v1
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    llm-provider: "groq"
+    groq-api-key: ${{ secrets.GROQ_API_KEY }}
 ```
-
-### Get Your Free API Key
-
-- **Groq** (Recommended): [console.groq.com](https://console.groq.com) - 14,400 requests/day FREE
-- **Gemini**: [ai.google.dev](https://ai.google.dev) - 1,500 requests/day FREE
-
-Add the API key to your repository secrets:
-`Settings → Secrets → Actions → New repository secret`
-
----
-
-## 💡 Why This Exists
-
-Developers spend **20 minutes per build failure** Googling cryptic error messages.
-
-This tool does it in **10 seconds**.
-
----
-
-## 📸 Real Examples
-
-### Example 1: Missing Dependency
-
-**Error:**
-```
-Error: Cannot find module 'lodash'
-```
-
-**AI Suggestion:**
-```bash
-npm install lodash --save
-```
-
-**Confidence:** 95%
-
----
-
-### Example 2: TypeScript Type Error
-
-**Error:**
-```
-Property 'name' does not exist on type '{}'
-```
-
-**AI Suggestion:**
-```typescript
-interface User {
-  name: string;
-  email: string;
-}
-
-const user: User = {
-  name: 'John',
-  email: 'john@example.com'
-};
-```
-
-**Confidence:** 88%
-
----
-
-## 🎯 Features
-
-### ✨ Currently Supported
-
-- ✅ **Multiple AI Providers**: Groq, Gemini, Ollama (self-hosted)
-- ✅ **Smart Fallback**: If one provider fails, tries others automatically
-- ✅ **Language Detection**: JavaScript, TypeScript, Python, Java, Go, Rust, PHP, Ruby
-- ✅ **Framework Recognition**: Jest, Pytest, JUnit, Mocha, and more
-- ✅ **Stack Trace Analysis**: Parses error logs intelligently
-- ✅ **File Context**: Fetches relevant source code for better suggestions
-- ✅ **Confidence Scoring**: Only posts when confident (configurable threshold)
-- ✅ **Custom Context**: Inject internal docs or common fixes
-
-### 🚧 Coming Soon (v2)
-
-- 🎯 **Learning Mode**: Store accepted fixes in a vector DB
-- 🎯 **Auto-PR**: Create a pull request with the fix
-- 🎯 **Team Context**: Inject company-specific documentation
-- 🎯 **Metrics Dashboard**: Track fix success rate over time
-- 🎯 **More Languages**: C++, Swift, Kotlin
 
 ---
 
 ## ⚙️ Configuration
 
-### All Available Inputs
+### Action Inputs
 
+| Input | Description | Default | Required |
+|-------|-------------|---------|----------|
+| `github-token` | GitHub token for posting comments | `${{ secrets.GITHUB_TOKEN }}` | ✅ Yes |
+| `llm-provider` | AI provider: `groq`, `gemini`, or `ollama` | `groq` | No |
+| `groq-api-key` | Groq API key ([Get free key](https://console.groq.com)) | - | If using Groq |
+| `gemini-api-key` | Gemini API key ([Get free key](https://ai.google.dev)) | - | If using Gemini |
+| `ollama-endpoint` | Self-hosted Ollama URL (e.g., `http://localhost:11434`) | - | If using Ollama |
+| `enable-comments` | Enable/disable PR commenting | `true` | No |
+| `confidence-threshold` | Minimum confidence to post (0-100) | `50` | No |
+| `max-log-lines` | Maximum log lines to analyze | `500` | No |
+| `custom-context` | Team-specific rules (e.g., "Use TypeScript strict mode") | `""` | No |
+
+### Example Configuration
 ```yaml
-- uses: your-username/ai-ci-healer@v1
+- name: AI CI Healer
+  if: failure()
+  uses: your-username/ai-ci-healer@v1
   with:
-    # Required
     github-token: ${{ secrets.GITHUB_TOKEN }}
-    
-    # AI Provider (default: groq)
-    llm-provider: groq  # Options: groq, gemini, ollama
+    llm-provider: groq
     groq-api-key: ${{ secrets.GROQ_API_KEY }}
-    gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
-    ollama-endpoint: http://localhost:11434  # For self-hosted
-    
-    # Optional
-    max-log-lines: 500  # How many log lines to analyze (default: 500)
-    confidence-threshold: 50  # Minimum confidence to post (0-100, default: 50)
+    confidence-threshold: 60
     custom-context: |
-      Our team uses TypeScript with strict mode.
-      We prefer async/await over promises.
+      Our team conventions:
+      - Always use TypeScript strict mode
+      - Prefer async/await over promises
+      - Follow Airbnb style guide
 ```
 
 ---
 
-## 🏢 Enterprise Features
+## 🔒 Security & Privacy
 
-### Self-Hosted with Ollama
+We take your code security seriously:
 
-For companies that want to keep everything in-house:
+- **🚫 Zero Data Retention**: Your code is never stored. Logs are sent to the AI provider only for analysis and immediately discarded.
+- **🔍 Fully Transparent**: Audit the entire source code in [`src/`](./src) to see exactly what data is transmitted.
+- **🏠 Self-Hosted Option**: Use the `ollama` provider to keep 100% of your data on your own infrastructure—no external API calls.
+- **🔐 API Keys**: All API keys are stored securely in GitHub Secrets and never logged or exposed.
 
-```yaml
-- uses: your-username/ai-ci-healer@v1
-  with:
-    github-token: ${{ secrets.GITHUB_TOKEN }}
-    llm-provider: ollama
-    ollama-endpoint: http://your-ollama-server:11434
-```
-
-### Custom Context Injection
-
-Inject your internal documentation or Stack Overflow:
-
-```yaml
-custom-context: |
-  Common issues in our codebase:
-  - Always use environment variables for API keys
-  - Database connections should use connection pooling
-  - Unit tests should mock external API calls
-```
+> **Note**: When using Groq or Gemini, error logs are sent to their APIs for analysis. Read their privacy policies: [Groq](https://groq.com/privacy-policy/) | [Gemini](https://ai.google.dev/gemini-api/terms)
 
 ---
 
@@ -181,61 +97,58 @@ custom-context: |
 
 We love contributions! Here's how you can help:
 
-1. **Star this repo** ⭐
-2. **Fork it** 🍴
-3. **Add support for your favorite language/framework** 💻
-4. **Submit a PR** 🚀
+### Quick Start
+1. 🍴 Fork the repository
+2. 🌿 Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. ✍️ Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. 🚀 Push to the branch (`git push origin feature/amazing-feature`)
+5. 🎉 Open a Pull Request
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
+### Ways to Contribute
+- 🐛 Report bugs in [Issues](../../issues)
+- 💡 Suggest features in [Discussions](../../discussions)
+- 📝 Improve documentation
+- 🌍 Add support for new languages
+- ⚡ Optimize performance
+- ✅ Write tests
 
----
-
-## 📊 Stats
-
-- **Languages Supported**: 10+
-- **Frameworks Detected**: 20+
-- **Average Fix Time**: 10 seconds
-- **Typical Confidence**: 75-90%
-
----
-
-## 🙏 Acknowledgments
-
-Built with:
-- [Groq](https://groq.com) - Lightning-fast inference
-- [Google Gemini](https://ai.google.dev) - Powerful AI
-- [Ollama](https://ollama.ai) - Self-hosted LLMs
-- [@actions/core](https://github.com/actions/toolkit) - GitHub Actions toolkit
+Read our [**CONTRIBUTING.md**](./CONTRIBUTING.md) for detailed guidelines.
 
 ---
 
-## 📝 License
+## 📄 License
 
-MIT License - see [LICENSE](./LICENSE) for details.
-
----
-
-## 🔗 Links
-
-- **Author**: [Mr. P @ QuizMyBrainz](https://github.com/yourusername)
-- **Twitter**: [@yourhandle](https://twitter.com/yourhandle)
-- **YouTube**: [Your Channel](https://youtube.com/yourchannel)
-- **Discord**: [Join our community](https://discord.gg/yourserver)
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ---
 
-## ⭐ Star History
+## ⭐ Show Your Support
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/ai-ci-healer&type=Date)](https://star-history.com/#yourusername/ai-ci-healer&Date)
+If AI CI Healer saved you time and frustration, consider:
+
+<div align="center">
+
+### Give it a star ⭐
+
+[![Star History](https://img.shields.io/github/stars/mariorazo97/ai-ci-healer?style=social)](https://github.com/mariorazo97/ai-ci-healer)
+
+### Buy me a coffee ☕
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/quizmybrai7)
+
+### Follow for updates 📢
+
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://x.com/QMybrainz)
+[![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@QuizMyBrainz)
+
+</div>
 
 ---
 
-**Made with ❤️ by developers who are tired of Googling error messages**
+<div align="center">
 
----
+**Made with ❤️ by [Mr. P @ QuizMyBrainz](https://github.com/mariorazo97)**
 
-### 🎬 Video Tutorial
+[Report Bug](../../issues) · [Request Feature](../../issues) · [Ask Question](../../discussions)
 
-Watch the full build process on YouTube: [Coming Soon]
-
-Subscribe for more dev tools and tutorials!
+</div>
